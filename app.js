@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')
 const db = require('./models')
 const flash = require('connect-flash')
 const session = require('express-session')
+const passport = require('./config/passport')  // our customized passport configuration file
 const bodyParser = require('body-parser')
 const { storeLocalVariables } = require('./middlewares/storeLocalVariables')
 
@@ -17,6 +18,8 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(passport.initialize())  // passport initialize
+app.use(passport.session())  // activate passport session
 app.use(flash())
 app.use(storeLocalVariables)
 
@@ -26,6 +29,6 @@ app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`)
 })
 
-require('./routes')(app)
+require('./routes')(app, passport)
 
 module.exports = app
