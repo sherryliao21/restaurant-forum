@@ -5,11 +5,28 @@ const userController = require('../controllers/userController')
 
 module.exports = (app) => {
 
-  app.get('/', (req, res) => res.redirect('/restaurants'))  // redirect to /restaurants when access /
-  app.get('/restaurants', restController.getRestaurants)
+  const authenticated = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      return next()
+    }
+    res.redirect('/signin')
+  }
 
-  app.get('/admin', (req, res) => res.redirect('/admin/restaurants'))   // redirect to /admin/restaurants when access /admin
-  app.get('/admin/restaurants', adminController.getRestaurants)
+  const authenticatedAdmin = (req, res, next) => {
+    if (req.isAuthenticated()) {
+      if (req.user.isAdmin) {
+        return next()
+      }
+      return res.redirect('/')   // if not admin, show normal user's restaurants page
+    }
+    res.redirect('/signin')
+  }
+
+  app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))  // redirect to /restaurants when access /
+  app.get('/restaurants', authenticated, restController.getRestaurants)
+
+  app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))   // redirect to /admin/restaurants when access /admin
+  app.get('/admin/restaurants', authenticatedAdmin, adminController.getRestaurants)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)

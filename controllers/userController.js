@@ -31,7 +31,7 @@ const userController = {
     })
       .then(user => {
         req.flash('success_msg', '成功註冊帳號！')
-        return res.render('/signin')
+        return res.render('signin')
       })
       .catch(err => console.log(err))
   },
