@@ -3,6 +3,7 @@ const handlebars = require('express-handlebars')
 const db = require('./models')
 const flash = require('connect-flash')
 const session = require('express-session')
+const methodOverride = require('method-override')
 const passport = require('./config/passport')  // our customized passport configuration file
 const bodyParser = require('body-parser')
 const { storeLocalVariables } = require('./middlewares/storeLocalVariables')
@@ -18,6 +19,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }))
+app.use(methodOverride('_method'))
 app.use(passport.initialize())  // passport initialize
 app.use(passport.session())  // activate passport session
 app.use(flash())
