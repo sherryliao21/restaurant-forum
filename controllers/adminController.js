@@ -8,6 +8,25 @@ const adminController = {
         return res.render('admin/restaurants', { restaurants })
       })
       .catch(err => console.log(err))
+  },
+  createRestaurant: (req, res) => {
+    return res.render('admin/create')
+  },
+  postRestaurant: (req, res) => {
+    const { name, tel, address, opening_hours, description } = req.body
+    if (!name) {
+      req.flash('error_msg', '所有欄位都是必填')
+      // return res.render('admin/create', { name, tel, address, opening_hour, description })
+      return res.redirect('back')
+    }
+    return Restaurant.create({
+      name, tel, address, opening_hours, description
+    })
+      .then(restaurant => {
+        req.flash('success_msg', '成功新增餐廳！')
+        return res.redirect('/admin/restaurants')
+      })
+      .catch(err => console.log(err))
   }
 }
 

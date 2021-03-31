@@ -28,6 +28,9 @@ module.exports = (app) => {
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))   // redirect to /admin/restaurants when access /admin
   app.get('/admin/restaurants', authenticatedAdmin, adminController.getRestaurants)
 
+  app.get('/admin/restaurants/create', authenticatedAdmin, adminController.createRestaurant)
+  app.post('/admin/restaurants', authenticatedAdmin, adminController.postRestaurant)
+
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
 
