@@ -26,32 +26,15 @@ const adminController = {
 
     const file = req.file
     if (file) {
-      // fs.readFile(file.path, (err, data) => {     // read file
-      //   if (err) console.log('Error:', err)
-      //   fs.writeFile(`upload/${file.originalname}`, data, () => {  // write file into upload folder
-      //     return Restaurant.create({
-      //       name, tel, address, opening_hours, description,
-      //       image: file ? `/upload/${file.originalname}` : null    //  if there is a valid file, find it by the path; if not, pass null
-      //     })
-      //       .then(restaurant => {
-      //         req.flash('success_msg', '成功新增餐廳！')
-      //         return res.redirect('/admin/restaurants')
-      //       })
-      //       .catch(err => console.log(err))
-      //   })
-      // })
-
       imgur.setClientID(IMGUR_CLIENT_ID);
       imgur.upload(file.path, (err, img) => {
         return Restaurant.create({
           name, tel, address, opening_hours, description,
-          image: file ? img.data.link : null
+          image: file ? img.data.link : null,
+        }).then((restaurant) => {
+          req.flash('success_msg', '成功新增餐廳！')
+          return res.redirect('/admin/restaurants')
         })
-          .then(restaurant => {
-            req.flash('success_msg', '成功新增餐廳！')
-            return res.redirect('/admin/restaurants')
-          })
-          .catch(err => console.log(err))
       })
     } else {
       return Restaurant.create({
@@ -91,16 +74,16 @@ const adminController = {
       imgur.setClientID(IMGUR_CLIENT_ID);
       imgur.upload(file.path, (err, img) => {
         return Restaurant.findByPk(id)
-          .then(restaurant => {
+          .then((restaurant) => {
             restaurant.update({
-              name, tel, address, opening_hours, description, image: file ? `upload/${file.originalname}` : restaurant.image
+              name, tel, address, opening_hours, description,
+              image: file ? img.data.link : restaurant.image,
             })
+              .then((restaurant) => {
+                req.flash('success_msg', '成功編輯餐廳！')
+                res.redirect('/admin/restaurants')
+              })
           })
-          .then(restaurant => {
-            req.flash('success_msg', '成功編輯餐廳！')
-            res.redirect('/admin/restaurants')
-          })
-          .catch(err => console.log(err))
       })
     } else {
       return Restaurant.findByPk(id)
