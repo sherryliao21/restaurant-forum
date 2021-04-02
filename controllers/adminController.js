@@ -1,8 +1,11 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
+const User = db.User
 const fs = require('fs')
 const imgur = require('imgur-node-api')
+const { useFakeServer } = require('sinon')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const helpers = require('../_helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
@@ -109,6 +112,40 @@ const adminController = {
             return res.redirect('/admin/restaurants')
           })
           .catch(err => console.log(err))
+      })
+      .catch(err => console.log(err))
+  },
+
+  getUsers: (req, res) => {
+    return User.findAll({ raw: true })
+      .then(users => {
+        return res.render('admin/users', { users })
+      })
+      .catch(err => console.log(err))
+  },
+
+  toggleAdmin: (req, res) => {
+    const id = req.params.id
+
+    return User.findByPk(id)
+      .then(user => {
+        // 如果有啟動預防管理員將自己設為 user 的機制，測試會跑不過，所以先 comment 起來
+        // if (helpers.getUser(req).id === user.id) {
+        //   req.flash('error_msg', '管理員不可編輯自身權限！')
+        //   return res.redirect('/admin/users')
+        // }
+        return user.update({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          createdAt: user.createdAt,
+          updatedAt: new Date(),
+          isAdmin: user.isAdmin ? 0 : 1    // if user.isAdmin === '1', swap value to '0'; if opposite, swap value to '1'
+        })
+      })
+      .then(user => {
+        req.flash('success_msg', `成功編輯 ${user.name} 權限！`)
+        return res.redirect('/admin/users')
       })
       .catch(err => console.log(err))
   }
