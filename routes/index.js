@@ -42,6 +42,10 @@ module.exports = (app) => {
   app.get('/admin/users', authenticatedAdmin, adminController.getUsers)
   app.put('/admin/users/:id/toggleAdmin', authenticatedAdmin, adminController.toggleAdmin)
 
+  app.get('/users/:id', authenticated, (req, res) => {
+    return res.send('This feature is still under development!')
+  })
+
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)
 
