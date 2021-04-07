@@ -1,6 +1,7 @@
 const db = require('../models')
 const Restaurant = db.Restaurant
 const User = db.User
+const Category = db.Category
 const fs = require('fs')
 const imgur = require('imgur-node-api')
 const { useFakeServer } = require('sinon')
@@ -9,7 +10,7 @@ const helpers = require('../_helpers')
 
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({ raw: true, order: [['id', 'DESC']] })   // raw: true to turn sequelize object into JavaScript object
+    return Restaurant.findAll({ raw: true, nest: true, include: [Category], order: [['id', 'DESC']] })   // raw: true to turn sequelize object into JavaScript object
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants })
       })
@@ -54,9 +55,9 @@ const adminController = {
 
   getRestaurant: (req, res) => {
     const id = req.params.id
-    return Restaurant.findByPk(id, { raw: true })
+    return Restaurant.findByPk(id, { include: [Category] })
       .then(restaurant => {
-        return res.render('admin/restaurant', { restaurant })
+        return res.render('admin/restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => console.log(err))
   },
