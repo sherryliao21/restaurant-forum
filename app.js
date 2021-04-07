@@ -17,7 +17,8 @@ if (process.env.NODE_ENV !== 'production') {
 
 
 app.engine('handlebars', handlebars({
-  defaultLayout: 'main'
+  defaultLayout: 'main',
+  helpers: require('./config/handlebars-helpers')
 }))
 app.set('view engine', 'handlebars')
 app.use('/upload', express.static(__dirname + '/upload'))
