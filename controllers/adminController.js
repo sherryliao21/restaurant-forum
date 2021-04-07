@@ -10,7 +10,6 @@ const helpers = require('../_helpers')
 const adminController = {
   getRestaurants: (req, res) => {
     return Restaurant.findAll({ raw: true, order: [['id', 'DESC']] })   // raw: true to turn sequelize object into JavaScript object
-
       .then(restaurants => {
         return res.render('admin/restaurants', { restaurants })
       })
@@ -27,6 +26,7 @@ const adminController = {
       req.flash('error_msg', '所有欄位都是必填')
       return res.redirect('back')
     }
+
 
     const file = req.file
     if (file) {
@@ -131,10 +131,10 @@ const adminController = {
     return User.findByPk(id)
       .then(user => {
         // 如果有啟動預防管理員將自己設為 user 的機制，測試會跑不過，所以先 comment 起來
-        // if (helpers.getUser(req).id === user.id) {
-        //   req.flash('error_msg', '管理員不可編輯自身權限！')
-        //   return res.redirect('/admin/users')
-        // }
+        if (helpers.getUser(req).id === user.id) {
+          req.flash('error_msg', '管理員不可編輯自身權限！')
+          return res.redirect('/admin/users')
+        }
         return user.update({
           name: user.name,
           email: user.email,
