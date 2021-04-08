@@ -52,6 +52,7 @@ module.exports = (app) => {
   app.delete('/admin/categories/:id', authenticatedAdmin, categoryController.deleteCategory)
 
   app.post('/comments', authenticated, commentController.postComment)
+  app.delete('/comments/:id', authenticatedAdmin, commentController.deleteComment)
 
   app.get('/users/:id', authenticated, (req, res) => {
     return res.send('This feature is still under development!')
