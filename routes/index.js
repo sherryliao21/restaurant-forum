@@ -3,6 +3,7 @@ const adminController = require('../controllers/adminController')
 const restController = require('../controllers/restController')
 const userController = require('../controllers/userController')
 const categoryController = require('../controllers/categoryController')
+const commentController = require('../controllers/commentController')
 const multer = require('multer')    // file upload middleware
 const upload = multer({ dest: 'temp/' })   // upload to temp folder
 const helpers = require('../_helpers')
@@ -50,6 +51,7 @@ module.exports = (app) => {
   app.put('/admin/categories/:id', authenticatedAdmin, categoryController.putCategory)
   app.delete('/admin/categories/:id', authenticatedAdmin, categoryController.deleteCategory)
 
+  app.post('/comments', authenticated, commentController.postComment)
 
   app.get('/users/:id', authenticated, (req, res) => {
     return res.send('This feature is still under development!')
