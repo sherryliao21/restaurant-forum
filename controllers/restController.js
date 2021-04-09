@@ -3,6 +3,7 @@ const Restaurant = db.Restaurant
 const Category = db.Category
 const Comment = db.Comment
 const User = db.User
+const helpers = require('../_helpers')
 
 const pageLimit = 10
 
@@ -39,7 +40,8 @@ const restController = {
         const data = result.rows.map(r => ({    // result.rows has the data we need
           ...r.dataValues,
           description: r.dataValues.description.substring(0, 50),
-          categoryName: r.dataValues.Category.name
+          categoryName: r.dataValues.Category.name,
+          isFavorited: helpers.getUser(req).FavoritedRestaurants.map(d => d.id).includes(r.id)
         }))
 
         Category.findAll({
