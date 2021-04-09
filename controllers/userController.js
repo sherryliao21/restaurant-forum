@@ -107,7 +107,7 @@ const userController = {
             })
               .then(user => {
                 req.flash('success_msg', '成功編輯使用者資訊！')
-                res.redirect(`/users/${id}`)
+                return res.redirect(`/users/${id}`)
               })
           })
       })
@@ -117,10 +117,10 @@ const userController = {
           user.update({
             name, avatar: user.avatar
           })
-        })
-        .then(user => {
-          req.flash('success_msg', '成功編輯使用者資訊！')
-          return res.redirect(`/users/${id}`)
+            .then(user => {
+              req.flash('success_msg', '成功編輯使用者資訊！')
+              return res.redirect(`/users/${id}`)
+            })
         })
         .catch(err => console.log(err))
     }

@@ -2,7 +2,7 @@
 
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.removeConstraint('Restaurants', 'comments_ibfk_2')
+    await queryInterface.removeConstraint('Comments', 'comments_ibfk_2')
   },
 
   down: async (queryInterface, Sequelize) => {
