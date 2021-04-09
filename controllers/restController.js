@@ -68,6 +68,8 @@ const restController = {
       ]
     })
       .then(restaurant => {
+        restaurant.viewCounts = restaurant.viewCounts ? restaurant.viewCounts + 1 : 1  // if there is already viewCounts, whenever visit, add 1 to it; if not visited before, remain 1
+        restaurant.save()
         return res.render('restaurant', { restaurant: restaurant.toJSON() })
       })
       .catch(err => console.log(err))
