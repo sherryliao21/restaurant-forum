@@ -7,6 +7,7 @@ module.exports = {
       password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
       isAdmin: true,
       name: 'root',
+      avatar: 'https://history.ucr.edu/sites/g/files/rcwecm1916/files/styles/form_preview/public/blank-profile-picture-png.png?itok=MQ-iPuNG',
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -15,6 +16,7 @@ module.exports = {
       password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
       isAdmin: false,
       name: 'user1',
+      avatar: 'https://history.ucr.edu/sites/g/files/rcwecm1916/files/styles/form_preview/public/blank-profile-picture-png.png?itok=MQ-iPuNG',
       createdAt: new Date(),
       updatedAt: new Date()
     },
@@ -23,6 +25,7 @@ module.exports = {
       password: bcrypt.hashSync('12345678', bcrypt.genSaltSync(10), null),
       isAdmin: false,
       name: 'user2',
+      avatar: 'https://history.ucr.edu/sites/g/files/rcwecm1916/files/styles/form_preview/public/blank-profile-picture-png.png?itok=MQ-iPuNG',
       createdAt: new Date(),
       updatedAt: new Date()
     }], {})

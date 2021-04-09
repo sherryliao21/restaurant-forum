@@ -56,6 +56,7 @@ module.exports = (app) => {
 
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.editUser)
+  app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 
   app.get('/signup', userController.signUpPage)
   app.post('/signup', userController.signUp)

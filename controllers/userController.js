@@ -2,6 +2,8 @@ const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
 const helpers = require('../_helpers')
+const imgur = require('imgur-node-api')
+const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
   signUpPage: (req, res) => {
@@ -76,23 +78,38 @@ const userController = {
   },
 
   putUser: (req, res) => {
-    const currentUserId = helpers.getUser(req).id
-    const { name, image } = req.body
-    return User.findByPk(req.params.id)
-      .then(user => {
-        // you can only edit your own profile 
-        if (currentUserId !== req.params.id) {
-          return res.redirect('back')
-        }
+    const { name } = req.body
+    const id = req.params.id
+    const file = req.file
 
-        if (!name) {
-          req.flash('error_msg', '所有欄位都是必填')
-          return res.redirect('back')
-        }
-
-
-
+    if (file) {
+      imgur.setClientID(IMGUR_CLIENT_ID);
+      imgur.upload(file.path, (err, img) => {
+        return User.findByPk(id)
+          .then(user => {
+            user.update({
+              name,
+              avatar: file ? img.data.link : user.avatar
+            })
+              .then(user => {
+                req.flash('success_msg', '成功編輯使用者資訊！')
+                res.redirect(`/users/${id}`)
+              })
+          })
       })
+    } else {
+      return User.findByPk(id)
+        .then(user => {
+          user.update({
+            name, avatar: user.avatar
+          })
+        })
+        .then(user => {
+          req.flash('success_msg', '成功編輯使用者資訊！')
+          return res.redirect(`/users/${id}`)
+        })
+        .catch(err => console.log(err))
+    }
   }
 }
 
