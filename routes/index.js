@@ -29,6 +29,7 @@ module.exports = (app) => {
 
   app.get('/', authenticated, (req, res) => res.redirect('/restaurants'))  // redirect to /restaurants when access /
   app.get('/restaurants', authenticated, restController.getRestaurants)
+  app.get('/restaurants/feeds', authenticated, restController.getFeeds)
   app.get('/restaurants/:id', authenticated, restController.getRestaurant)
 
   app.get('/admin', authenticatedAdmin, (req, res) => res.redirect('/admin/restaurants'))   // redirect to /admin/restaurants when access /admin
