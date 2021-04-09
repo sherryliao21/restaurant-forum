@@ -13,4 +13,16 @@
       {{/if}}
     </div>
   </div>
+  <div class="row mt-3">
+    <div class="col-12 px-4 py-3" style="border-bottom: #9797979e solid 1px;">
+      <div>已評論餐廳 ({{count}})</div>
+    </div>
+    <div class="col-12 p-4">
+      {{#each comments}}
+      <a href="/restaurants/{{this.RestaurantId}}" class="mr-3">
+        <img src="{{this.Restaurant.image}}" style="width: 100px;">
+      </a>
+      {{/each}}
+    </div>
+  </div>
 </div>
