@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
 const User = db.User
+const helpers = require('../_helpers')
 
 const userController = {
   signUpPage: (req, res) => {
@@ -49,6 +50,14 @@ const userController = {
     req.flash('success_msg', '成功登出！')
     req.logout()
     res.redirect('/signin')
+  },
+
+  getUser: (req, res) => {
+    return User.findByPk(req.params.id)
+      .then(user => {
+        return res.render('profile', { userProfile: user.toJSON() })
+      })
+      .catch(err => console.log(err))
   }
 }
 

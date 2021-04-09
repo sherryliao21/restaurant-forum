@@ -1,0 +1,14 @@
+<div class="profile-container" style="background-color: #fff; height: 350px">
+  <div class="row">
+    <div class="avatar col-md-4">
+      <img src="{{userProfile.avatar}}" alt="User Avatar" style="width: 350px; height: 350px;">
+    </div>
+    <div class="personal-info col-md-4">
+      <h1>{{userProfile.name}}</h1>
+      <p>{{userProfile.email}}</p>
+      <a href="/users/{{user.id}}/edit">
+        <button class="btn btn-primary">Edit</button>
+      </a>
+    </div>
+  </div>
+</div>
