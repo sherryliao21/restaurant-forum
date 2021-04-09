@@ -6,9 +6,11 @@
     <div class="personal-info col-md-4">
       <h1>{{userProfile.name}}</h1>
       <p>{{userProfile.email}}</p>
+      {{#if (isSelected userProfile.id user.id)}}
       <a href="/users/{{user.id}}/edit">
         <button class="btn btn-primary">Edit</button>
       </a>
+      {{/if}}
     </div>
   </div>
 </div>
