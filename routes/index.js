@@ -62,6 +62,7 @@ module.exports = (app) => {
   app.post('/like/:restaurantId', authenticated, userController.Like)
   app.delete('/like/:restaurantId', authenticated, userController.Unlike)
 
+  app.get('/users/top', authenticated, userController.getTopUser)
   app.get('/users/:id', authenticated, userController.getUser)
   app.get('/users/:id/edit', authenticated, userController.editUser)
   app.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
