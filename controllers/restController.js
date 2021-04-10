@@ -73,8 +73,8 @@ const restController = {
       ]
     })
       .then(restaurant => {
-        const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)  // find this user that added this restaurant to his favorite
-        const isLiked = restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
+        const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(helpers.getUser(req).id)  // find this user that added this restaurant to his favorite
+        const isLiked = restaurant.LikedUsers.map(d => d.id).includes(helpers.getUser(req).id)
         restaurant.viewCounts = restaurant.viewCounts ? restaurant.viewCounts + 1 : 1  // if there is already viewCounts, whenever visit, add 1 to it; if not visited before, remain 1
         restaurant.save()
         return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
