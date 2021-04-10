@@ -68,14 +68,16 @@ const restController = {
       include: [
         Category,
         { model: User, as: 'FavoritedUsers' },   // check if this user is among the ones who added this restaurant to favorites
+        { model: User, as: 'LikedUsers' },
         { model: Comment, include: [User] }     // include another model (Comment), and another one related to Comment which is User, to get the user's name value
       ]
     })
       .then(restaurant => {
         const isFavorited = restaurant.FavoritedUsers.map(d => d.id).includes(req.user.id)  // find this user that added this restaurant to his favorite
+        const isLiked = restaurant.LikedUsers.map(d => d.id).includes(req.user.id)
         restaurant.viewCounts = restaurant.viewCounts ? restaurant.viewCounts + 1 : 1  // if there is already viewCounts, whenever visit, add 1 to it; if not visited before, remain 1
         restaurant.save()
-        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited: isFavorited })
+        return res.render('restaurant', { restaurant: restaurant.toJSON(), isFavorited, isLiked })
       })
       .catch(err => console.log(err))
   },
