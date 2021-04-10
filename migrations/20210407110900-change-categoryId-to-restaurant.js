@@ -14,12 +14,7 @@ module.exports = {
 
   down: async (queryInterface, Sequelize) => {
     await queryInterface.changeColumn('Restaurants', 'CategoryId', {
-      type: Sequelize.INTEGER,
-      allowNull: true,
-      references: {
-        model: 'Categories',
-        key: 'id'
-      }
+      type: Sequelize.INTEGER
     })
 
   }
