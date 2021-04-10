@@ -156,7 +156,7 @@ const userController = {
       .catch(err => console.log(err))
   },
 
-  addLike: (req, res) => {
+  Like: (req, res) => {
     return Like.create({
       UserId: helpers.getUser(req).id,
       RestaurantId: req.params.restaurantId
@@ -167,7 +167,7 @@ const userController = {
       .catch(err => console.log(err))
   },
 
-  removeLike: (req, res) => {
+  Unlike: (req, res) => {
     return Like.findOne({
       where: {
         UserId: helpers.getUser(req).id,
