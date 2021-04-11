@@ -117,6 +117,10 @@ const restController = {
         return res.render('dashboard', { restaurant: restaurant.toJSON() })
       })
       .catch(err => console.log(err))
+  },
+
+  getTop10: (req, res) => {
+    return res.render('top10')
   }
 }
 
