@@ -4,9 +4,10 @@ const db = require('./models')
 const flash = require('connect-flash')
 const session = require('express-session')
 const methodOverride = require('method-override')
-const passport = require('./config/passport')  // our customized passport configuration file
+
 const bodyParser = require('body-parser')
 const { storeLocalVariables } = require('./middlewares/storeLocalVariables')
+const dotenv = require('dotenv')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -15,6 +16,7 @@ if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
 }
 
+const passport = require('./config/passport')  // our customized passport configuration file
 
 app.engine('handlebars', handlebars({
   defaultLayout: 'main',
