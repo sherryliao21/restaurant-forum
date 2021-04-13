@@ -9,6 +9,14 @@ const adminService = {
         callback({ restaurants })
       })
       .catch(err => console.log(err))
+  },
+  getRestaurant: (req, res, callback) => {
+    const id = req.params.id
+    return Restaurant.findByPk(id, { include: [Category] })
+      .then(restaurant => {
+        callback({ restaurant: restaurant.toJSON() })
+      })
+      .catch(err => console.log(err))
   }
 }
 
