@@ -19,19 +19,14 @@ const categoryController = {
     })
   },
   putCategory: (req, res) => {
-    const { name } = req.body
-    if (!name) {
-      req.flash('error_msg', '請輸入類別名稱！')
-      return res.redirect('back')
-    } else {
-      return Category.findByPk(req.params.id)
-        .then(category => {
-          category.update({ name })
-            .then(category => {
-              res.redirect('/admin/categories')
-            })
-        })
-    }
+    categoryService.putCategory(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_msg', data['message'])
+        return res.redirect('back')
+      }
+      req.flash('success_msg', 'successfully edited category')
+      res.redirect('/admin/categories')
+    })
   },
   deleteCategory: (req, res) => {
     return Category.findByPk(req.params.id)

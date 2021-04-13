@@ -23,11 +23,25 @@ const categoryService = {
     const { name } = req.body
     if (!name) {
       callback({ status: 'error', message: 'name didn\'t exist' })
-      return res.redirect('back')
     } else {
       return Category.create({ name })
         .then(category => {
           callback({ status: 'success', message: 'successfully posted category' })
+        })
+    }
+  },
+
+  putCategory: (req, res, callback) => {
+    const { name } = req.body
+    if (!name) {
+      callback({ status: 'error', message: 'name didn\'t exist' })
+    } else {
+      return Category.findByPk(req.params.id)
+        .then(category => {
+          category.update({ name })
+            .then(category => {
+              callback({ status: 'success', message: 'successfully edited category' })
+            })
         })
     }
   }
