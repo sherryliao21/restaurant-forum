@@ -8,14 +8,13 @@ const { useFakeServer } = require('sinon')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 const helpers = require('../_helpers')
 const category = require('../models/category')
+const adminService = require('../services/adminService')
 
 const adminController = {
   getRestaurants: (req, res) => {
-    return Restaurant.findAll({ raw: true, nest: true, include: [Category], order: [['id', 'DESC']] })   // raw: true to turn sequelize object into JavaScript object
-      .then(restaurants => {
-        return res.render('admin/restaurants', { restaurants })
-      })
-      .catch(err => console.log(err))
+    adminService.getRestaurants(req, res, (data) => {
+      return res.render('admin/restaurants', data)
+    })
   },
 
   createRestaurant: (req, res) => {
