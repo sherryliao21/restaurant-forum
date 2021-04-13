@@ -29,36 +29,14 @@ const adminController = {
   },
 
   postRestaurant: (req, res) => {
-    const { name, tel, address, opening_hours, description, categoryId } = req.body
-    if (!name) {
-      req.flash('error_msg', '所有欄位都是必填')
-      return res.redirect('back')
-    }
-
-
-    const file = req.file
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID);
-      imgur.upload(file.path, (err, img) => {
-        return Restaurant.create({
-          name, tel, address, opening_hours, description,
-          image: file ? img.data.link : null,
-          CategoryId: categoryId
-        }).then((restaurant) => {
-          req.flash('success_msg', '成功新增餐廳！')
-          return res.redirect('/admin/restaurants')
-        })
-      })
-    } else {
-      return Restaurant.create({
-        name, tel, address, opening_hours, description, image: null, CategoryId: categoryId   // if no file, use null for image path
-      })
-        .then(restaurant => {
-          req.flash('success_msg', '成功新增餐廳！')
-          return res.redirect('/admin/restaurants')
-        })
-        .catch(err => console.log(err))
-    }
+    adminService.postRestaurant(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_msg', data['message'])
+        return res.redirect('back')
+      }
+      req.flash('success_msg', data['message'])
+      res.redirect('/admin/restaurants')
+    })
   },
 
   getRestaurant: (req, res) => {
