@@ -8,6 +8,7 @@ const Like = db.Like
 const Followship = db.Followship
 const helpers = require('../_helpers')
 const imgur = require('imgur-node-api')
+const userService = require('../services/userService')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
 
 const userController = {
@@ -16,32 +17,14 @@ const userController = {
   },
 
   signUp: (req, res) => {
-    const { name, email, password, passwordCheck } = req.body
-    if (passwordCheck !== password) {
-      req.flash('error_msg', '密碼與確認密碼不相符！')
-      return res.redirect('/signup')
-    } else {
-      User.findOne({
-        where: { email }
-      })
-        .then(user => {
-          if (user) {
-            req.flash('error_msg', '此信箱已註冊！')
-            return res.redirect('/signup')
-          }
-        })
-    }
-
-    User.create({
-      name,
-      email,
-      password: bcrypt.hashSync(password, bcrypt.genSaltSync(10), null)
+    userService.signUp(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_msg', data['message'])
+        return res.redirect('back')
+      }
+      req.flash('success_msg', data['message'])
+      res.redirect('/signin')
     })
-      .then(user => {
-        req.flash('success_msg', '成功註冊帳號！')
-        return res.render('signin')
-      })
-      .catch(err => console.log(err))
   },
 
   signInPage: (req, res) => {
@@ -60,75 +43,28 @@ const userController = {
   },
 
   getUser: (req, res) => {
-    return User.findByPk(req.params.id)
-      .then(user => {
-        Comment.findAndCountAll({
-          raw: true, nest: true,
-          where: { userId: Number(req.params.id) },
-          include: Restaurant
-        })
-          .then(comments => {
-            return res.render('profile', {
-              userProfile: user.toJSON(),
-              count: comments.count,
-              comments: comments.rows
-            })
-          })
-
-      })
-      .catch(err => console.log(err))
+    userService.getUser(req, res, (data) => {
+      return res.render('profile', data)
+    })
   },
 
   editUser: (req, res) => {
-    const currentUserId = helpers.getUser(req).id
-    return User.findByPk(req.params.id)
-      .then(user => {
-        // you can only see the edit page of your own profile 
-        if (currentUserId !== Number(req.params.id)) {
-          req.flash('error_msg', '使用者只能編輯自己的個人資料')
-          return res.redirect(`/users/${currentUserId}/edit`)
-        }
-
-        return res.render('editProfile', { userProfile: user.toJSON() })
-      })
-      .catch(err => console.log(err))
+    userService.editUser(req, res, (data) => {
+      if (data['status'] === 'error') {
+        req.flash('error_msg', data['message'])
+        return res.redirect('back')
+      }
+      res.render('editProfile', data)
+    })
   },
 
   putUser: (req, res) => {
-    const { name } = req.body
-    const id = req.params.id
-    const file = req.file
-
-    if (file) {
-      imgur.setClientID(IMGUR_CLIENT_ID);
-      imgur.upload(file.path, (err, img) => {
-        return User.findByPk(id)
-          .then(user => {
-            user.update({
-              name,
-              avatar: file ? img.data.link : user.avatar
-            })
-              .then(user => {
-                req.flash('success_msg', '成功編輯使用者資訊！')
-                return res.redirect(`/users/${id}`)
-              })
-          })
-      })
-    } else {
-      return User.findByPk(id)
-        .then(user => {
-          user.update({
-            name, avatar: user.avatar
-          })
-            .then(user => {
-              req.flash('success_msg', '成功編輯使用者資訊！')
-              return res.redirect(`/users/${id}`)
-            })
-        })
-        .catch(err => console.log(err))
-    }
+    userService.putUser(req, res, (data) => {
+      req.flash('success_msg', 'successfully edited user')
+      return res.redirect(`/users/${req.params.id}`)
+    })
   },
-
+  ////////// 目前改到這邊
   addFavorite: (req, res) => {
     return Favorite.create({
       UserId: helpers.getUser(req).id,

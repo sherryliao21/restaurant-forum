@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs')
 const db = require('../../models')
 const User = db.User
+const userService = require('../../services/userService')
 
 // declare JWT variables
 const jwt = require('jsonwebtoken')
@@ -10,25 +11,9 @@ const JwtStrategy = passportJWT.Strategy
 
 let userController = {
   signUp: (req, res) => {
-    if (req.body.passwordCheck !== req.body.password) {
-      return res.json({ status: 'error', message: '兩次密碼輸入不同！' })
-    } else {
-      User.findOne({ where: { email: req.body.email } })
-        .then(user => {
-          if (user) {
-            return res.json({ status: 'error', message: '信箱重複！' })
-          } else {
-            User.create({
-              name: req.body.name,
-              email: req.body.email,
-              password: bcrypt.hashSync(req.body.password, bcrypt.genSaltSync(10), null)
-            })
-              .then(user => {
-                return res.json({ status: 'success', message: '成功註冊帳號！' })
-              })
-          }
-        })
-    }
+    userService.signUp(req, res, (data) => {
+      return res.json(data)
+    })
   },
 
   signIn: (req, res) => {
@@ -51,6 +36,24 @@ let userController = {
           token, user: { id: user.id, name: user.name, email: user.email, isAdmin: user.isAdmin }
         })
       })
+  },
+
+  getUser: (req, res) => {
+    userService.getUser(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  editUser: (req, res) => {
+    userService.editUser(req, res, (data) => {
+      return res.json(data)
+    })
+  },
+
+  putUser: (req, res) => {
+    userService.putUser(req, res, (data) => {
+      return res.json(data)
+    })
   }
 }
 
