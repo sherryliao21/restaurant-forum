@@ -96,7 +96,18 @@ const adminService = {
         })
         .catch(err => console.log(err))
     }
-  }
+  },
+
+  createRestaurant: (req, res, callback) => {
+    Category.findAll({
+      raw: true,
+      nest: true
+    })
+      .then(categories => {
+        callback({ categories })
+      })
+      .catch(err => console.log(err))
+  },
 }
 
 

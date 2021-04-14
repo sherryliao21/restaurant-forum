@@ -18,14 +18,9 @@ const adminController = {
   },
 
   createRestaurant: (req, res) => {
-    Category.findAll({
-      raw: true,
-      nest: true
+    adminService.createRestaurant(req, res, (data) => {
+      return res.render('admin/create', data)
     })
-      .then(categories => {
-        return res.render('admin/create', { categories })
-      })
-      .catch(err => console.log(err))
   },
 
   postRestaurant: (req, res) => {
