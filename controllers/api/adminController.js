@@ -49,6 +49,12 @@ const adminController = {
     adminService.getUsers(req, res, (data) => {
       return res.json(data)
     })
+  },
+
+  toggleAdmin: (req, res) => {
+    adminService.toggleAdmin(req, res, (data) => {
+      return res.json(data)
+    })
   }
 }
 

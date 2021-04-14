@@ -4,6 +4,7 @@ const Category = db.Category
 const User = db.User
 const imgur = require('imgur-node-api')
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID
+const helpers = require('../_helpers')
 
 const adminService = {
   getRestaurants: (req, res, callback) => {
@@ -127,6 +128,31 @@ const adminService = {
     return User.findAll({ raw: true, nest: true })
       .then(users => {
         callback({ users })
+      })
+      .catch(err => console.log(err))
+  },
+
+  toggleAdmin: (req, res, callback) => {
+    const id = req.params.id
+
+    return User.findByPk(id)
+      .then(user => {
+        // // 如果有啟動預防管理員將自己設為 user 的機制，測試會跑不過，所以先 comment 起來
+        if (helpers.getUser(req).id === user.id) {
+          callback({ status: 'error', message: 'admin cannot set itself as user!' })
+          return res.redirect('/admin/users')
+        }
+        return user.update({
+          name: user.name,
+          email: user.email,
+          password: user.password,
+          createdAt: user.createdAt,
+          updatedAt: new Date(),
+          isAdmin: user.isAdmin ? 0 : 1    // if user.isAdmin === '1', swap value to '0'; if opposite, swap value to '1'
+        })
+      })
+      .then(user => {
+        callback({ status: 'success', message: 'user authorization was successfully modified!' })
       })
       .catch(err => console.log(err))
   }
