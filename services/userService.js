@@ -100,6 +100,34 @@ const userService = {
         })
         .catch(err => console.log(err))
     }
+  },
+
+  addFavorite: (req, res, callback) => {
+    return Favorite.create({
+      UserId: helpers.getUser(req).id,
+      RestaurantId: req.params.restaurantId
+    })
+      .then(restaurant => {
+        return callback({ status: 'success', message: 'successfully added to favorite' })
+      })
+      .catch(err => console.log(err))
+  },
+
+  removeFavorite: (req, res, callback) => {
+    return Favorite.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      }
+    })
+      .then(favorite => {
+        favorite.destroy()
+          .then(restaurant => {
+            return callback({ status: 'success', message: 'successfully removed from favorite' })
+          })
+          .catch(err => console.log(err))
+      })
+      .catch(err => console.log(err))
   }
 }
 

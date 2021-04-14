@@ -64,35 +64,21 @@ const userController = {
       return res.redirect(`/users/${req.params.id}`)
     })
   },
-  ////////// 目前改到這邊
+
   addFavorite: (req, res) => {
-    return Favorite.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
+    userService.addFavorite(req, res, (data) => {
+      req.flash('success_msg', 'successfully added to favorite')
+      return res.redirect('/restaurants')
     })
-      .then(restaurant => {
-        return res.redirect('back')
-      })
-      .catch(err => console.log(err))
   },
 
   removeFavorite: (req, res) => {
-    return Favorite.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        RestaurantId: req.params.restaurantId
-      }
+    userService.removeFavorite(req, res, (data) => {
+      req.flash('success_msg', 'successfully removed from favorite')
+      return res.redirect('/restaurants')
     })
-      .then(favorite => {
-        favorite.destroy()
-          .then(restaurant => {
-            return res.redirect('back')
-          })
-          .catch(err => console.log(err))
-      })
-      .catch(err => console.log(err))
   },
-
+  ////////// 目前改到這邊
   Like: (req, res) => {
     return Like.create({
       UserId: helpers.getUser(req).id,
