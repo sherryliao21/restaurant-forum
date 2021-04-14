@@ -41,19 +41,9 @@ const adminController = {
   },
 
   editRestaurant: (req, res) => {
-    const id = req.params.id
-
-    Category.findAll({ raw: true, nest: true })
-      .then(categories => {
-        return Restaurant.findByPk(id)
-          .then(restaurant => {
-            return res.render('admin/create', {
-              restaurant: restaurant.toJSON(),
-              categories
-            })
-          })
-          .catch(err => console.log(err))
-      })
+    adminService.editRestaurant(req, res, (data) => {
+      return res.render('admin/create', data)
+    })
   },
 
   putRestaurant: (req, res) => {

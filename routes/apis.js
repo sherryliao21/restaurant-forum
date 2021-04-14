@@ -9,6 +9,7 @@ const categoryController = require('../controllers/api/categoryController')
 const userController = require('../controllers/api/userController')
 
 const passport = require('../config/passport')
+const { authenticate } = require('../config/passport')
 const authenticated = passport.authenticate('jwt', { session: false })
 
 const authenticatedAdmin = (req, res, next) => {
@@ -23,6 +24,7 @@ const authenticatedAdmin = (req, res, next) => {
 router.get('/admin/restaurants', authenticated, authenticatedAdmin, adminController.getRestaurants)
 router.get('/admin/restaurants/create', authenticated, authenticatedAdmin, adminController.createRestaurant)
 router.get('/admin/restaurants/:id', authenticated, authenticatedAdmin, adminController.getRestaurant)
+router.get('/admin/restaurants/:id/edit', authenticated, authenticatedAdmin, adminController.editRestaurant)
 router.post('/admin/restaurants', authenticated, authenticatedAdmin, upload.single('image'), adminController.postRestaurant)
 router.put('/admin/restaurants/:id', authenticated, authenticatedAdmin, upload.single('image'), adminController.putRestaurant)
 router.delete('/admin/restaurants/:id', authenticated, authenticatedAdmin, adminController.deleteRestaurant)
