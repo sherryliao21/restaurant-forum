@@ -66,11 +66,9 @@ const adminController = {
   },
 
   getUsers: (req, res) => {
-    return User.findAll({ raw: true })
-      .then(users => {
-        return res.render('admin/users', { users })
-      })
-      .catch(err => console.log(err))
+    adminService.getUsers(req, res, (data) => {
+      return res.render('admin/users', data)
+    })
   },
 
   toggleAdmin: (req, res) => {

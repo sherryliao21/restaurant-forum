@@ -43,6 +43,12 @@ const adminController = {
     adminService.editRestaurant(req, res, (data) => {
       return res.json(data)
     })
+  },
+
+  getUsers: (req, res, callback) => {
+    adminService.getUsers(req, res, (data) => {
+      return res.json(data)
+    })
   }
 }
 
