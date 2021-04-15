@@ -60,100 +60,55 @@ const userController = {
 
   putUser: (req, res) => {
     userService.putUser(req, res, (data) => {
-      req.flash('success_msg', 'successfully edited user')
+      req.flash('success_msg', data['message'])
       return res.redirect(`/users/${req.params.id}`)
     })
   },
 
   addFavorite: (req, res) => {
     userService.addFavorite(req, res, (data) => {
-      req.flash('success_msg', 'successfully added to favorite')
+      req.flash('success_msg', data['message'])
       return res.redirect('/restaurants')
     })
   },
 
   removeFavorite: (req, res) => {
     userService.removeFavorite(req, res, (data) => {
-      req.flash('success_msg', 'successfully removed from favorite')
+      req.flash('success_msg', data['message'])
       return res.redirect('/restaurants')
     })
   },
-  ////////// 目前改到這邊
+
   Like: (req, res) => {
-    return Like.create({
-      UserId: helpers.getUser(req).id,
-      RestaurantId: req.params.restaurantId
+    userService.Like(req, res, (data) => {
+      return res.redirect('/restaurants')
     })
-      .then(restaurant => {
-        return res.redirect('back')
-      })
-      .catch(err => console.log(err))
   },
 
   Unlike: (req, res) => {
-    return Like.findOne({
-      where: {
-        UserId: helpers.getUser(req).id,
-        RestaurantId: req.params.restaurantId
-      }
+    userService.Unlike(req, res, (data) => {
+      return res.redirect('/restaurants')
     })
-      .then(restaurant => {
-        restaurant.destroy()
-          .then(restaurant => {
-            return res.redirect('back')
-          })
-          .catch(err => console.log(err))
-      })
-      .catch(err => console.log(err))
   },
 
   getTopUser: (req, res) => {
-    // 撈出所有 User 與 followers 資料
-    return User.findAll({
-      include: [
-        { model: User, as: 'Followers' }
-      ]
-    }).then(users => {
-      // 整理 users 資料
-      users = users.map(user => ({
-        ...user.dataValues,
-        // 計算追蹤者人數
-        FollowerCount: user.Followers.length,
-        // 判斷目前登入使用者是否已追蹤該 User 物件
-        isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(user.id)
-      }))
-      // 依追蹤者人數排序清單
-      users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
-      return res.render('topUser', { users: users })
+    userService.getTopUser(req, res, (data) => {
+      return res.render('topUser', data)
     })
   },
 
   addFollowing: (req, res) => {
-    return Followship.create({
-      followerId: helpers.getUser(req).id,
-      followingId: req.params.userId
+    userService.addFollowing(req, res, (data) => {
+      req.flash('success_msg', data['message'])
+      return res.redirect('back')
     })
-      .then((followship) => {
-        return res.redirect('back')
-      })
-      .catch(err => console.log(err))
   },
 
   removeFollowing: (req, res) => {
-    return Followship.findOne({
-      where: {
-        followerId: helpers.getUser(req).id,
-        followingId: req.params.userId
-      }
+    userService.removeFollowing(req, res, (data) => {
+      req.flash('success_msg', data['message'])
+      return res.redirect('back')
     })
-      .then((followship) => {
-        followship.destroy()
-          .then((followship) => {
-            return res.redirect('back')
-          })
-          .catch(err => console.log(err))
-      })
-      .catch(err => console.log(err))
   }
 }
 

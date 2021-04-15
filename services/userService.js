@@ -128,6 +128,79 @@ const userService = {
           .catch(err => console.log(err))
       })
       .catch(err => console.log(err))
+  },
+
+  Like: (req, res, callback) => {
+    return Like.create({
+      UserId: helpers.getUser(req).id,
+      RestaurantId: req.params.restaurantId
+    })
+      .then(restaurant => {
+        return callback({ status: 'success', message: 'successfully added to like', restaurant: restaurant })
+      })
+      .catch(err => console.log(err))
+  },
+
+  Unlike: (req, res, callback) => {
+    return Like.findOne({
+      where: {
+        UserId: helpers.getUser(req).id,
+        RestaurantId: req.params.restaurantId
+      }
+    })
+      .then(restaurant => {
+        restaurant.destroy()
+          .then(restaurant => {
+            return callback({ status: 'success', message: 'successfully removed from like', restaurant: restaurant })
+          })
+          .catch(err => console.log(err))
+      })
+      .catch(err => console.log(err))
+  },
+
+  getTopUser: (req, res, callback) => {
+    return User.findAll({
+      include: [
+        { model: User, as: 'Followers' }
+      ]
+    })
+      .then(users => {
+        users = users.map(user => ({
+          ...user.dataValues,
+          FollowerCount: user.Followers.length,
+          isFollowed: helpers.getUser(req).Followings.map(d => d.id).includes(user.id)
+        }))
+        users = users.sort((a, b) => b.FollowerCount - a.FollowerCount)
+        return callback({ users })
+      })
+  },
+
+  addFollowing: (req, res, callback) => {
+    return Followship.create({
+      followerId: helpers.getUser(req).id,
+      followingId: req.params.userId
+    })
+      .then(followship => {
+        return callback({ status: 'success', message: 'successfully followed user' })
+      })
+      .catch(err => console.log(err))
+  },
+
+  removeFollowing: (req, res, callback) => {
+    return Followship.findOne({
+      where: {
+        followerId: helpers.getUser(req).id,
+        followingId: req.params.userId
+      }
+    })
+      .then(followship => {
+        followship.destroy()
+          .then((followship) => {
+            return callback({ status: 'success', message: 'successfully unfollowed user' })
+          })
+          .catch(err => console.log(err))
+      })
+      .catch(err => console.log(err))
   }
 }
 

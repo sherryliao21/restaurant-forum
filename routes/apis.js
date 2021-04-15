@@ -42,11 +42,18 @@ router.put('/admin/users/:id/toggleAdmin', authenticated, authenticatedAdmin, ad
 router.post('/signin', userController.signIn)
 router.post('/signup', userController.signUp)
 
+router.get('/users/top', authenticated, userController.getTopUser)
 router.get('/users/:id', authenticated, userController.getUser)
 router.put('/users/:id', authenticated, upload.single('image'), userController.putUser)
 router.get('/users/:id/edit', authenticated, userController.editUser)
 
 router.post('/favorite/:restaurantId', authenticated, userController.addFavorite)
 router.delete('/favorite/:restaurantId', authenticated, userController.removeFavorite)
+
+router.post('/like/:restaurantId', authenticated, userController.Like)
+router.delete('/like/:restaurantId', authenticated, userController.Unlike)
+
+router.post('/following/:userId', authenticated, userController.addFollowing)
+router.delete('/following/:userId', authenticated, userController.removeFollowing)
 
 module.exports = router
